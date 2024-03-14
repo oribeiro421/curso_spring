@@ -3,6 +3,7 @@ package com.algaworks.algafoods.api.controller;
 import com.algaworks.algafoods.domain.model.Restaurante;
 import com.algaworks.algafoods.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,16 +22,10 @@ public class RestauranteController {
         return restauranteRepository.findAll();
     }
 
-    @GetMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable Long restauranteId) {
-        Optional<Restaurante> restaurante = restauranteRepository.findById(restauranteId);
+    @GetMapping("/{id}")
+    public ResponseEntity<Restaurante> buscar(@PathVariable Long id) {
+        Restaurante restaurante = restauranteRepository.findById(id).orElseThrow();
 
-        if (restaurante.isPresent()) {
-            return ResponseEntity.ok(restaurante.get());
-        }
-
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>(restaurante, HttpStatus.OK);
     }
-
-
 }
