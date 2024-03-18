@@ -4,6 +4,7 @@ import com.algaworks.algafoods.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafoods.domain.model.Cozinha;
 import com.algaworks.algafoods.domain.repository.CozinhaRepository;
 import com.algaworks.algafoods.domain.service.CozinhaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,12 +39,12 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody Cozinha cozinha) {
+    public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha) {
         return cozinhaRepository.save(cozinha);
     }
 
     @PutMapping("/{id}")
-    public Cozinha atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+    public Cozinha atualizar(@PathVariable Long id, @RequestBody @Valid Cozinha cozinha) {
         Cozinha cozinhaAtual = cozinhaRepository.findById(id).orElseThrow();
 
             BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
@@ -56,14 +57,6 @@ public class CozinhaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long cozinhaId) throws EntidadeEmUsoException {
         cozinhaService.excluir(cozinhaId);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody Map<String, Object> campos){
-        campos.forEach((nomePropriedade, valorPropriedade) ->{
-            System.out.println(nomePropriedade + " = " + valorPropriedade);
-        });
-        return ResponseEntity.ok().build();
     }
 
 }

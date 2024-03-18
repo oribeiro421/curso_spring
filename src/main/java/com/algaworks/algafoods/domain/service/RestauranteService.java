@@ -4,6 +4,7 @@ import com.algaworks.algafoods.domain.exception.RestauranteNaoEncontradoExceptio
 import com.algaworks.algafoods.domain.model.Cozinha;
 import com.algaworks.algafoods.domain.model.Restaurante;
 import com.algaworks.algafoods.domain.repository.RestauranteRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class RestauranteService {
     @Autowired
     private CozinhaService cadastroCozinha;
 
-    public Restaurante salvar(Restaurante restaurante) {
+    public Restaurante salvar(@Valid Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
 
         Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaId);
