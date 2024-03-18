@@ -1,12 +1,11 @@
 package com.algaworks.algafoods.domain.model;
 
-import com.algaworks.algafoods.Groups;
+import com.algaworks.algafoods.core.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import jakarta.validation.groups.ConvertGroup;
-import jakarta.validation.groups.Default;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -29,6 +28,7 @@ public class Restaurante {
     @NotBlank
     @Column(nullable = false)
     private String nome;
+    @NotNull
     @PositiveOrZero
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
