@@ -1,5 +1,9 @@
 package com.algaworks.algafoods.api.controller;
 
+import com.algaworks.algafoods.api.assembler.CozinhaInputDisassembler;
+import com.algaworks.algafoods.api.assembler.CozinhaModelAssembler;
+import com.algaworks.algafoods.api.model.CozinhaModel;
+import com.algaworks.algafoods.api.model.input.CozinhaInput;
 import com.algaworks.algafoods.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafoods.domain.model.Cozinha;
 import com.algaworks.algafoods.domain.repository.CozinhaRepository;
@@ -26,37 +30,48 @@ public class CozinhaController {
     @Autowired
     private CozinhaService cozinhaService;
 
+    @Autowired
+    private CozinhaModelAssembler cozinhaModelAssembler;
+
+    @Autowired
+    private CozinhaInputDisassembler cozinhaInputDisassembler;
+
     @GetMapping
-    public List<Cozinha> listar() {
-        return cozinhaRepository.findAll();
+    public List<CozinhaModel> listar() {
+        List<Cozinha> todasCozinhas = cozinhaRepository.findAll();
+
+        return cozinhaModelAssembler.toCollectionModel(todasCozinhas);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
-        Cozinha cozinha = cozinhaRepository.findById(id).orElseThrow();
-        return new ResponseEntity<>(cozinha, HttpStatus.OK);
+    @GetMapping("/{cozinhaId}")
+    public CozinhaModel buscar(@PathVariable Long cozinhaId) {
+        Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
+
+        return cozinhaModelAssembler.toModel(cozinha);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha) {
-        return cozinhaRepository.save(cozinha);
+    public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
+        Cozinha cozinha = cozinhaInputDisassembler.toDomainObject(cozinhaInput);
+        cozinha = cozinhaService.salvar(cozinha);
+
+        return cozinhaModelAssembler.toModel(cozinha);
     }
 
-    @PutMapping("/{id}")
-    public Cozinha atualizar(@PathVariable Long id, @RequestBody @Valid Cozinha cozinha) {
-        Cozinha cozinhaAtual = cozinhaRepository.findById(id).orElseThrow();
+    @PutMapping("/{cozinhaId}")
+    public CozinhaModel atualizar(@PathVariable Long cozinhaId,
+                                  @RequestBody @Valid CozinhaInput cozinhaInput) {
+        Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(cozinhaId);
+        cozinhaInputDisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
+        cozinhaAtual = cozinhaService.salvar(cozinhaAtual);
 
-            BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-
-           return cozinhaRepository.save(cozinhaAtual);
-
+        return cozinhaModelAssembler.toModel(cozinhaAtual);
     }
 
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long cozinhaId) throws EntidadeEmUsoException {
+    public void remover(@PathVariable Long cozinhaId) {
         cozinhaService.excluir(cozinhaId);
     }
-
 }
