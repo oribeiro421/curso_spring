@@ -31,6 +31,7 @@ public class CozinhaService {
     public void excluir(Long cozinhaId) throws EntidadeEmUsoException {
         try {
             cozinhaRepository.deleteById(cozinhaId);
+            cozinhaRepository.flush();
 
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException(

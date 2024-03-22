@@ -1,6 +1,6 @@
 package com.algaworks.algafoods.api.model.input;
 
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CidadeInput {
+public class UsuarioInput {
 
     @NotBlank
     private String nome;
-    @Valid
-    @NotNull
-    private EstadoIdInput estado;
+    @NotBlank
+    @Email
+    private String email;
 }

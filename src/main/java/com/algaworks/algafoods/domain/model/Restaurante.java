@@ -1,12 +1,6 @@
 package com.algaworks.algafoods.domain.model;
 
-import com.algaworks.algafoods.core.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
-import jakarta.validation.groups.ConvertGroup;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -46,6 +40,14 @@ public class Restaurante {
     private List<FormaPagamento> formaPagamentos;
     @Embedded
     private Endereco endereco;
+    private Boolean ativo = Boolean.TRUE;
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produto;
+
+    public void ativar(){
+        setAtivo(true);
+    }
+    public void inativar(){
+        setAtivo(false);
+    }
 }
