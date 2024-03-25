@@ -38,9 +38,7 @@ public class CozinhaController {
 
     @GetMapping
     public List<CozinhaModel> listar() {
-        List<Cozinha> todasCozinhas = cozinhaRepository.findAll();
-
-        return cozinhaModelAssembler.toCollectionModel(todasCozinhas);
+        return cozinhaModelAssembler.toCollectionModel(cozinhaRepository.findAll());
     }
 
     @GetMapping("/{cozinhaId}")

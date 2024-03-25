@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pagamentos")
+@RequestMapping("/formas-pagamento")
 public class FormaPagamentoController {
 
     @Autowired
@@ -58,9 +58,7 @@ public class FormaPagamentoController {
 
         formaPagamentoInputDisassembler.copyToDomainObject(formaPagamentoInput, formaPagamentoAtual);
 
-        formaPagamentoAtual = formaPagamentoService.salvar(formaPagamentoAtual);
-
-        return formaPagamentoModelAssembler.toModel(formaPagamentoAtual);
+        return formaPagamentoModelAssembler.toModel(formaPagamentoService.salvar(formaPagamentoAtual));
     }
 
     @DeleteMapping("/{formaPagamentoId}")

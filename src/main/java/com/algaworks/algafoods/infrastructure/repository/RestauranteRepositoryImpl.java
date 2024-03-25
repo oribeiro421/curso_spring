@@ -7,8 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.Predicate;
 import org.flywaydb.core.internal.util.StringUtils;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -24,13 +24,13 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
     @PersistenceContext
     private EntityManager manager;
 
-    @Autowired
-    @Lazy
+    @Autowired @Lazy
     private RestauranteRepository restauranteRepository;
 
     @Override
     public List<Restaurante> find(String nome,
                                   BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
+
         var builder = manager.getCriteriaBuilder();
 
         var criteria = builder.createQuery(Restaurante.class);
