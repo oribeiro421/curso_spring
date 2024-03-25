@@ -3,7 +3,6 @@ package com.algaworks.algafoods.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,23 +19,20 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private BigDecimal sbuTotal;
-    @Column(nullable = false)
+    private BigDecimal subtotal;
     private BigDecimal taxaFrete;
-    @Column(nullable = false)
     private BigDecimal valorTotal;
     @CreationTimestamp
-    @Column(nullable = false)
     private LocalDateTime dataCriacao;
     private LocalDateTime dataConfirmacao;
     private LocalDateTime dataCancelamento;
     private LocalDateTime dataEntrega;
     @Embedded
     private Endereco enderecoEntrega;
-    private StatusPedido statusPedido;
+    @Enumerated(EnumType.STRING)
+    private StatusPedido status = StatusPedido.CRIADO;
     @ManyToOne
-    @JoinColumn(name = "usuario_client_id", nullable = false)
+    @JoinColumn(name = "usuario_cliente_id", nullable = false)
     private Usuario cliente;
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -46,5 +42,6 @@ public class Pedido {
     private FormaPagamento formaPagamento;
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> items;
+
 
 }
