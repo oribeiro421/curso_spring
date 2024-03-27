@@ -4,13 +4,16 @@ import com.algaworks.algafoods.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafoods.api.assembler.RestauranteModelAssembler;
 import com.algaworks.algafoods.api.model.RestauranteModel;
 import com.algaworks.algafoods.api.model.input.RestauranteInput;
+import com.algaworks.algafoods.api.model.view.RestauranteView;
 import com.algaworks.algafoods.domain.exception.*;
 import com.algaworks.algafoods.domain.model.Restaurante;
 import com.algaworks.algafoods.domain.repository.RestauranteRepository;
 import com.algaworks.algafoods.domain.service.RestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +32,15 @@ public class RestauranteController {
     @Autowired
     private RestauranteInputDisassembler restauranteInputDisassembler;
 
+    @JsonView(RestauranteView.Resumo.class)
     @GetMapping
     public List<RestauranteModel> listar() {
         return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+    }
+    @JsonView(RestauranteView.ApenasNome.class)
+    @GetMapping(params = "projecao=apenas-nome")
+    public List<RestauranteModel> listarApenasNome() {
+        return listar();
     }
 
     @GetMapping("/{restauranteId}")
