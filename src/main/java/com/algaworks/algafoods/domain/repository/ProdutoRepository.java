@@ -1,5 +1,6 @@
 package com.algaworks.algafoods.domain.repository;
 
+import com.algaworks.algafoods.domain.model.FotoProduto;
 import com.algaworks.algafoods.domain.model.Produto;
 import com.algaworks.algafoods.domain.model.Restaurante;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long>, Produto
 
     @Query("from Produto p where p.ativo = true and p.restaurante = :restaurante")
     List<Produto> findAtivosByRestaurante(Restaurante restaurante);
+
+    @Query("from FotoProduto f " +
+            "join f.produto p " +
+            "where p.restaurante.id = :restauranteId and f.produto.id = :produtoId")
+    Optional<FotoProduto> findFotoById(Long restauranteId, Long produtoId);
 }
