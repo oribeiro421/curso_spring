@@ -36,9 +36,10 @@ public class FotoProdutoService {
         produtoRepository.flush();
 
         FotoStorageService.NovaFoto novaFoto = FotoStorageService.NovaFoto.builder()
-                        .nomeArquivo(foto.getNomeArquivo())
-                        .inputStream(dadosArquivo)
-                        .build();
+                            .contentType(foto.getContentType())
+                            .nomeArquivo(foto.getNomeArquivo())
+                            .inputStream(dadosArquivo)
+                            .build();
 
         fotoStorageService.substituir(nomeArquivoExistente,novaFoto);
 
