@@ -9,10 +9,13 @@ import com.algaworks.algafoods.domain.repository.FormaPagamentoRepositoy;
 import com.algaworks.algafoods.domain.service.FormaPagamentoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/formas-pagamento")
@@ -31,8 +34,13 @@ public class FormaPagamentoController {
     private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
     @GetMapping
-    public List<FormaPagamentoModel> listar(){
-        return formaPagamentoModelAssembler.toCollectionModel(formaPagamentoRepositoy.findAll());
+    public ResponseEntity<List<FormaPagamentoModel>> listar(){
+        List<FormaPagamentoModel> formaPagamentoModels =
+                formaPagamentoModelAssembler.toCollectionModel(formaPagamentoRepositoy.findAll());
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .body(formaPagamentoModels);
     }
     @GetMapping("/{formaPagamentoId}")
     public FormaPagamentoModel buscar(@PathVariable Long formaPagamentoId){

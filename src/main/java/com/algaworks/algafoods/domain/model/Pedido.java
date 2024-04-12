@@ -1,12 +1,14 @@
 package com.algaworks.algafoods.domain.model;
 
+import com.algaworks.algafoods.domain.event.PedidoCanceladoEvent;
+import com.algaworks.algafoods.domain.event.PedidoConfirmadoEvent;
 import com.algaworks.algafoods.domain.exception.NegocioException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -16,8 +18,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-public class Pedido {
+@EqualsAndHashCode(of = "id", callSuper = false)
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +62,8 @@ public class Pedido {
     public void confirmar(){
         setStatus(StatusPedido.CONFIRMADO);
         setDataConfirmacao(OffsetDateTime.now());
+
+        registerEvent(new PedidoConfirmadoEvent(this));
     }
     public void entregar(){
         setStatus(StatusPedido.ENTREGUE);
@@ -68,6 +72,8 @@ public class Pedido {
     public void cancelar(){
         setStatus(StatusPedido.CANCELADO);
         setDataCancelamento(OffsetDateTime.now());
+
+        registerEvent(new PedidoCanceladoEvent(this));
     }
     private void setStatus(StatusPedido novoStatus){
         if (getStatus().naoPodeAlterar(novoStatus)){
