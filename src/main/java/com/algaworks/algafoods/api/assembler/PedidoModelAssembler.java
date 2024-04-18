@@ -1,29 +1,63 @@
 package com.algaworks.algafoods.api.assembler;
 
-import com.algaworks.algafoods.api.model.GrupoModel;
+import com.algaworks.algafoods.api.AlgaLinks;
+import com.algaworks.algafoods.api.controller.*;
 import com.algaworks.algafoods.api.model.PedidoModel;
-import com.algaworks.algafoods.domain.model.Grupo;
 import com.algaworks.algafoods.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
-public class PedidoModelAssembler {
+public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pedido, PedidoModel> {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public PedidoModel toModel(Pedido pedido) {
-        return modelMapper.map(pedido, PedidoModel.class);
+    @Autowired
+    private AlgaLinks algaLinks;
+
+    public PedidoModelAssembler(){
+        super(PedidoController.class, PedidoModel.class);
     }
 
-    public List<PedidoModel> toCollectionModel(List<Pedido> pedido) {
-        return pedido.stream()
-                .map(pedidos -> toModel(pedidos))
-                .collect(Collectors.toList());
+    @Override
+    public PedidoModel toModel(Pedido pedido) {
+        PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
+        modelMapper.map(pedido, pedidoModel);
+
+
+        pedidoModel.add(algaLinks.linkToPedidos("pedidos"));
+
+        if (pedido.podeSerConfirmado()) {
+            pedidoModel.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+        }
+
+        if (pedido.podeSerEntregue()) {
+            pedidoModel.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+        }
+
+        if (pedido.podeSerCancelado()) {
+            pedidoModel.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+        }
+
+        pedidoModel.getRestaurante().add(algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+
+        pedidoModel.getCliente().add(
+                algaLinks.linkToUsuario(pedido.getCliente().getId()));
+
+        pedidoModel.getFormaPagamento().add(
+                algaLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+
+        pedidoModel.getEnderecoEntrega().getCidade().add(
+                algaLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+
+        pedidoModel.getItens().forEach(item -> {
+            item.add(algaLinks.linkToProduto(
+                    pedidoModel.getRestaurante().getId(), item.getProdutoId(), "produto"));
+        });
+
+        return pedidoModel;
     }
 }

@@ -1,5 +1,6 @@
 package com.algaworks.algafoods.api.controller;
 
+import com.algaworks.algafoods.api.AlgaLinks;
 import com.algaworks.algafoods.api.assembler.ProdutoInputDisassembler;
 import com.algaworks.algafoods.api.assembler.ProdutoModelAssembler;
 import com.algaworks.algafoods.api.model.ProdutoModel;
@@ -11,6 +12,7 @@ import com.algaworks.algafoods.domain.service.ProdutoService;
 import com.algaworks.algafoods.domain.service.RestauranteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +32,12 @@ public class RestauranteProdutoController {
     private ProdutoInputDisassembler produtoInputDisassembler;
     @Autowired
     private ProdutoModelAssembler produtoModelAssembler;
+    @Autowired
+    private AlgaLinks algaLinks;
 
     @GetMapping
-    public List<ProdutoModel> listar(@PathVariable Long restauranteId,
-                                     @RequestParam(required = false) boolean incluirInativos){
+    public CollectionModel<ProdutoModel> listar(@PathVariable Long restauranteId,
+                                                @RequestParam(required = false) Boolean incluirInativos){
         Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
         List<Produto> todosProdutos;
 
@@ -42,7 +46,7 @@ public class RestauranteProdutoController {
         }else {
             todosProdutos = produtoRepository.findAtivosByRestaurante(restaurante);
         }
-        return produtoModelAssembler.toCollectionModel(todosProdutos);
+        return produtoModelAssembler.toCollectionModel(todosProdutos).add(algaLinks.linkToProdutos(restauranteId));
     }
     @GetMapping("/{produtoId}")
     public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId){

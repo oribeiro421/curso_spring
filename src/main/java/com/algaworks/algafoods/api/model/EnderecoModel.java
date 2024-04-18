@@ -7,10 +7,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 @Setter
 @Getter
-public class EnderecoModel {
+public class EnderecoModel extends RepresentationModel<EnderecoModel> {
 
     private String cep;
     private String logradouro;

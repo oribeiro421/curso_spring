@@ -10,6 +10,7 @@ import com.algaworks.algafoods.domain.service.EstadoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class EstadoController {
     private EstadoInputDisassembler estadoInputDisassembler;
 
     @GetMapping
-    public List<EstadoModel> listar() {
+    public CollectionModel<EstadoModel> listar() {
         List<Estado> todosEstados = estadoRepository.findAll();
 
         return estadoModelAssembler.toCollectionModel(todosEstados);

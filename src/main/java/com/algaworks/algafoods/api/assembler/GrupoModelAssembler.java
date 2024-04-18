@@ -1,29 +1,45 @@
 package com.algaworks.algafoods.api.assembler;
 
+import com.algaworks.algafoods.api.AlgaLinks;
+import com.algaworks.algafoods.api.controller.GrupoController;
 import com.algaworks.algafoods.api.model.GrupoModel;
-import com.algaworks.algafoods.api.model.RestauranteModel;
 import com.algaworks.algafoods.domain.model.Grupo;
-import com.algaworks.algafoods.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class GrupoModelAssembler {
+public class GrupoModelAssembler extends RepresentationModelAssemblerSupport<Grupo, GrupoModel> {
 
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private AlgaLinks algaLinks;
+
+    public GrupoModelAssembler(){
+        super(GrupoController.class, GrupoModel.class);
+    }
+    @Override
     public GrupoModel toModel(Grupo grupo) {
-        return modelMapper.map(grupo, GrupoModel.class);
+        GrupoModel grupoModel = createModelWithId(grupo.getId(), grupo);
+        modelMapper.map(grupo, grupoModel);
+
+        grupoModel.add(algaLinks.linkToGrupos("grupos"));
+
+        grupoModel.add(algaLinks.linkToGrupoPermissoes(grupo.getId(), "permissoes"));
+
+        return grupoModel;
     }
 
-    public List<GrupoModel> toCollectionModel(List<Grupo> grupo) {
-        return grupo.stream()
-                .map(grupos -> toModel(grupos))
-                .collect(Collectors.toList());
+    @Override
+    public CollectionModel<GrupoModel> toCollectionModel(Iterable<? extends Grupo> entities) {
+        return super.toCollectionModel(entities)
+                .add(algaLinks.linkToGrupos());
     }
 }

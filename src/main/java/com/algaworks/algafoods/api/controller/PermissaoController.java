@@ -9,6 +9,7 @@ import com.algaworks.algafoods.domain.repository.PermissaoRepository;
 import com.algaworks.algafoods.domain.service.PermissaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class PermissaoController {
     private PermissaoInputDissasembler permissaoInputDissasembler;
 
     @GetMapping
-    public List<PermissaoModel> listar(){
+    public CollectionModel<PermissaoModel> listar(){
         return permissaoModelAssembler.toCollectionModel(permissaoRepository.findAll());
     }
     @GetMapping("/{permissaoId}")

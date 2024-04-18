@@ -1,7 +1,11 @@
 package com.algaworks.algafoods.api.controller;
 
+import com.algaworks.algafoods.api.assembler.RestauranteApenasNomeModelAssembler;
+import com.algaworks.algafoods.api.assembler.RestauranteBasicoModelAssembler;
 import com.algaworks.algafoods.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafoods.api.assembler.RestauranteModelAssembler;
+import com.algaworks.algafoods.api.model.RestauranteApenasNomeModel;
+import com.algaworks.algafoods.api.model.RestauranteBasicoModel;
 import com.algaworks.algafoods.api.model.RestauranteModel;
 import com.algaworks.algafoods.api.model.input.RestauranteInput;
 import com.algaworks.algafoods.api.model.view.RestauranteView;
@@ -12,7 +16,9 @@ import com.algaworks.algafoods.domain.service.RestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,19 +33,21 @@ public class RestauranteController {
     private RestauranteService restauranteService;
     @Autowired
     private RestauranteModelAssembler restauranteModelAssembler;
-
+    @Autowired
+    private RestauranteBasicoModelAssembler restauranteBasicoModelAssembler;
+    @Autowired
+    private RestauranteApenasNomeModelAssembler restauranteApenasNomeModelAssembler;
     @Autowired
     private RestauranteInputDisassembler restauranteInputDisassembler;
 
-    @JsonView(RestauranteView.Resumo.class)
     @GetMapping
-    public List<RestauranteModel> listar() {
-        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+    public CollectionModel<RestauranteBasicoModel> listar() {
+        return restauranteBasicoModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
-    @JsonView(RestauranteView.ApenasNome.class)
+
     @GetMapping(params = "projecao=apenas-nome")
-    public List<RestauranteModel> listarApenasNome() {
-        return listar();
+    public CollectionModel<RestauranteApenasNomeModel> listarApenasNome() {
+        return restauranteApenasNomeModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping("/{restauranteId}")
@@ -77,25 +85,33 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ativar(@PathVariable Long restauranteId){
+    public ResponseEntity<Void> ativar(@PathVariable Long restauranteId){
         restauranteService.ativar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{restauranteId}/desativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inativar(@PathVariable Long restauranteId){
+    public ResponseEntity<Void> inativar(@PathVariable Long restauranteId){
         restauranteService.inativar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{restauranteId}/abertura")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void abrir(@PathVariable Long restauranteId){
+    public ResponseEntity<Void> abrir(@PathVariable Long restauranteId){
         restauranteService.abertura(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
     @PutMapping("/{restauranteId}/fechamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void fechar(@PathVariable Long restauranteId){
+    public ResponseEntity<Void> fechar(@PathVariable Long restauranteId){
         restauranteService.fechamento(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
     @PutMapping("/ativacoes")
     @ResponseStatus(HttpStatus.NO_CONTENT)

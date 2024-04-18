@@ -5,12 +5,15 @@ import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-@Relation(collectionRelation = "cidades")
-@Setter
+import java.math.BigDecimal;
+
+@Relation(collectionRelation = "restaurantes")
 @Getter
-public class CidadeModel extends RepresentationModel<CidadeModel> {
+@Setter
+public class RestauranteBasicoModel extends RepresentationModel<RestauranteBasicoModel> {
 
     private Long id;
     private String nome;
-    private EstadoModel estado;
+    private BigDecimal taxaFrete;
+    private CozinhaModel cozinha;
 }

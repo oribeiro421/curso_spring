@@ -1,5 +1,6 @@
 package com.algaworks.algafoods.api.controller;
 
+import com.algaworks.algafoods.api.ResouceUriHelper;
 import com.algaworks.algafoods.api.assembler.CidadeInputDisassembler;
 import com.algaworks.algafoods.api.assembler.CidadeModelAssembler;
 import com.algaworks.algafoods.api.model.CidadeModel;
@@ -12,6 +13,9 @@ import com.algaworks.algafoods.domain.service.CidadeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +38,7 @@ public class CidadeController {
     private CidadeInputDisassembler cidadeInputDisassembler;
 
     @GetMapping
-    public List<CidadeModel> listar() {
+    public CollectionModel<CidadeModel> listar() {
         List<Cidade> todasCidades = cidadeRepository.findAll();
 
         return cidadeModelAssembler.toCollectionModel(todasCidades);
@@ -55,7 +59,11 @@ public class CidadeController {
 
             cidade = cadastroCidade.salvar(cidade);
 
-            return cidadeModelAssembler.toModel(cidade);
+            CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
+
+            ResouceUriHelper.addUriInResponseHeader(cidadeModel.getId());
+
+            return cidadeModel;
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }

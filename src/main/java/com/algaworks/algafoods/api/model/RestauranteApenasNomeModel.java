@@ -1,16 +1,14 @@
 package com.algaworks.algafoods.api.model;
 
-import com.algaworks.algafoods.domain.model.Permissao;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
-import java.util.List;
-
+@Relation(collectionRelation = "restaurantes")
 @Setter
 @Getter
-public class GrupoModel extends RepresentationModel<GrupoModel> {
+public class RestauranteApenasNomeModel extends RepresentationModel<RestauranteApenasNomeModel> {
 
     private Long id;
     private String nome;

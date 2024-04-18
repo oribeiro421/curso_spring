@@ -1,8 +1,8 @@
 package com.algaworks.algafoods.api.model;
 
-import com.algaworks.algafoods.domain.model.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class PedidoModel {
+public class PedidoModel extends RepresentationModel<PedidoModel> {
 
     private String codigo;
     private BigDecimal subtotal;
@@ -21,7 +21,7 @@ public class PedidoModel {
     private OffsetDateTime dataConfirmacao;
     private OffsetDateTime dataEntrega;
     private OffsetDateTime dataCancelamento;
-    private RestauranteResumoModel restaurante;
+    private RestauranteApenasNomeModel restaurante;
     private UsuarioModel cliente;
     private FormaPagamentoModel formaPagamento;
     private EnderecoModel enderecoEntrega;

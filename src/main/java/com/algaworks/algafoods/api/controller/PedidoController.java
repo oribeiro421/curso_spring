@@ -6,6 +6,7 @@ import com.algaworks.algafoods.api.assembler.PedidoResumoModelAssembler;
 import com.algaworks.algafoods.api.model.PedidoModel;
 import com.algaworks.algafoods.api.model.PedidoResumoModel;
 import com.algaworks.algafoods.api.model.input.PedidoInput;
+import com.algaworks.algafoods.core.data.PageWrapper;
 import com.algaworks.algafoods.core.data.PageableTranslator;
 import com.algaworks.algafoods.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafoods.domain.exception.NegocioException;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,15 +48,19 @@ public class PedidoController {
     @Autowired
     private PedidoInputDisassembler pedidoInputDisassembler;
 
+    @Autowired
+    private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+
     @GetMapping
-    public Page<PedidoResumoModel> pesquisar(PedidoFilter filter, Pageable pageable){
-        pageable = traduzirPageable(pageable);
+    public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter filter, Pageable pageable){
+        Pageable pageableTraduzido = traduzirPageable(pageable);
 
-        Page<Pedido> pedidoPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filter), pageable);
+        Page<Pedido> pedidoPage = pedidoRepository
+                .findAll(PedidoSpecs.usandoFiltro(filter), pageableTraduzido);
 
-        List<PedidoResumoModel> pedidoModels = pedidoResumoModelAssembler.toCollectionModel(pedidoPage.getContent());
+        pedidoPage = new PageWrapper<>(pedidoPage, pageable);
 
-        return new PageImpl<>(pedidoModels, pageable, pedidoPage.getTotalElements());
+        return pagedResourcesAssembler.toModel(pedidoPage, pedidoResumoModelAssembler);
     }
     @GetMapping("/{codigoPedido}")
     public PedidoModel obter(@PathVariable String codigoPedido){

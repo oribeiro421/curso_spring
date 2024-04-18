@@ -2,11 +2,12 @@ package com.algaworks.algafoods.api.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 @Getter
 @Setter
-public class ProdutoModel {
+public class ProdutoModel extends RepresentationModel<ProdutoModel> {
 
     private Long id;
     private String nome;

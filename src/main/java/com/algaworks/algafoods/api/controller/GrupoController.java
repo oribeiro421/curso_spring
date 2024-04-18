@@ -9,6 +9,7 @@ import com.algaworks.algafoods.domain.repository.GrupoRepository;
 import com.algaworks.algafoods.domain.service.GrupoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class GrupoController {
     private GrupoModelAssembler assembler;
 
     @GetMapping
-    public List<GrupoModel> listar(){
+    public CollectionModel<GrupoModel> listar(){
         return assembler.toCollectionModel(repository.findAll());
     }
     @GetMapping("/{grupoId}")
