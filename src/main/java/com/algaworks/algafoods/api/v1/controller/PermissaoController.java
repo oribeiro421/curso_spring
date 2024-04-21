@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/permissoes")
+@RequestMapping("/v1/permissoes")
 public class PermissaoController {
 
     @Autowired
