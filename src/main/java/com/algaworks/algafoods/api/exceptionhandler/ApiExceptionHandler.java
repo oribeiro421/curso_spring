@@ -30,6 +30,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,8 +39,8 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-    public static final String MGS_ERRO_GENERICO_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se" +
-            " o problema persistir, entre em contato com o administrador do sistema.";
+    public static final String MGS_ERRO_GENERICO_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. " +
+            "Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
 
     @Autowired
     private MessageSource messageSource;
@@ -56,6 +57,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .userMessage(detail)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleEntidadeNaoEncontrada(AccessDeniedException ex, WebRequest request) {
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        ProblemType problemType = ProblemType.ACESSO_NEGADO;
+        String detail = ex.getMessage();
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .userMessage("Você não possui permissão para executar essa operação.")
                 .build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
