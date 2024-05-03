@@ -1,5 +1,6 @@
 package com.algaworks.algafoods.api.v1.controller;
 
+import com.algaworks.algafoods.core.security.CheckSecurity;
 import com.algaworks.algafoods.domain.service.FluxoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ public class FluxoPedidoController {
     @Autowired
     private FluxoPedidoService fluxoPedidoService;
 
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     @PutMapping("/confirmacao")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> confirmar(@PathVariable String codigoPedido){
@@ -20,6 +22,8 @@ public class FluxoPedidoController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     @PutMapping("/entregue")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> entregar(@PathVariable String codigoPedido){
@@ -27,6 +31,8 @@ public class FluxoPedidoController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     @DeleteMapping("/cancelar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> cancelar(@PathVariable String codigoPedido){
