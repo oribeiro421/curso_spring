@@ -6,7 +6,6 @@ import com.algaworks.algafoods.api.v1.model.UsuarioModel;
 import com.algaworks.algafoods.api.v1.model.input.SenhaInput;
 import com.algaworks.algafoods.api.v1.model.input.UsuarioComSenhaInput;
 import com.algaworks.algafoods.api.v1.model.input.UsuarioInput;
-import com.algaworks.algafoods.core.security.CheckSecurity;
 import com.algaworks.algafoods.domain.model.Usuario;
 import com.algaworks.algafoods.domain.repository.UsuarioRepository;
 import com.algaworks.algafoods.domain.service.UsuarioService;
@@ -29,7 +28,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioInputDisassembler disassembler;
 
-    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+
     @GetMapping
     public CollectionModel<UsuarioModel> listar(){
         return assembler.toCollectionModel(repository.findAll());
@@ -40,7 +39,7 @@ public class UsuarioController {
         return assembler.toModel(usuario);
     }
 
-    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioModel adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput){
@@ -49,7 +48,7 @@ public class UsuarioController {
         return assembler.toModel(usuario);
     }
 
-    @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
+
     @PutMapping("/{usuarioId}")
     public UsuarioModel atualizar(@PathVariable Long usuarioId,
                                   @RequestBody @Valid UsuarioInput usuarioInput) {
@@ -60,7 +59,7 @@ public class UsuarioController {
         return assembler.toModel(usuarioAtual);
     }
 
-    @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
+
     @PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInput senha) {

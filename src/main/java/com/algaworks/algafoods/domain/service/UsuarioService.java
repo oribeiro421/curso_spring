@@ -7,7 +7,6 @@ import com.algaworks.algafoods.domain.model.Usuario;
 import com.algaworks.algafoods.domain.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,8 +20,6 @@ public class UsuarioService {
     @Autowired
     private GrupoService grupoService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Transactional
     public Usuario salvar(Usuario usuario){
@@ -35,10 +32,6 @@ public class UsuarioService {
                     ("Já existe um usuário cadastrado com o e-mail %s", usuario.getEmail()));
         }
 
-        if (usuario.isNovo()){
-            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        }
-
         return repository.save(usuario);
     }
     @Transactional
@@ -46,7 +39,7 @@ public class UsuarioService {
 
         Usuario usuario = buscarOuFalhar(usuarioId);
 
-        if (!passwordEncoder.matches(senhaAtual, usuario.getSenha())){
+        if (usuario.senhaNaoCoincideCom(senhaAtual)) {
             throw new NegocioException("Senha atual informada não coincide com a senha do usuário.");
         }
 

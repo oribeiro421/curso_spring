@@ -4,7 +4,6 @@ import com.algaworks.algafoods.api.v1.assembler.PermissaoInputDissasembler;
 import com.algaworks.algafoods.api.v1.assembler.PermissaoModelAssembler;
 import com.algaworks.algafoods.api.v1.model.PermissaoModel;
 import com.algaworks.algafoods.api.v1.model.input.PermissaoInput;
-import com.algaworks.algafoods.core.security.CheckSecurity;
 import com.algaworks.algafoods.domain.model.Permissao;
 import com.algaworks.algafoods.domain.repository.PermissaoRepository;
 import com.algaworks.algafoods.domain.service.PermissaoService;
@@ -27,7 +26,7 @@ public class PermissaoController {
     @Autowired
     private PermissaoInputDissasembler permissaoInputDissasembler;
 
-    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+
     @GetMapping
     public CollectionModel<PermissaoModel> listar(){
         return permissaoModelAssembler.toCollectionModel(permissaoRepository.findAll());

@@ -4,7 +4,6 @@ import com.algaworks.algafoods.api.v1.assembler.EstadoInputDisassembler;
 import com.algaworks.algafoods.api.v1.assembler.EstadoModelAssembler;
 import com.algaworks.algafoods.api.v1.model.EstadoModel;
 import com.algaworks.algafoods.api.v1.model.input.EstadoInput;
-import com.algaworks.algafoods.core.security.CheckSecurity;
 import com.algaworks.algafoods.domain.model.Estado;
 import com.algaworks.algafoods.domain.repository.EstadoRepository;
 import com.algaworks.algafoods.domain.service.EstadoService;
@@ -31,7 +30,7 @@ public class EstadoController {
     @Autowired
     private EstadoInputDisassembler estadoInputDisassembler;
 
-    @CheckSecurity.Estado.PodeConsultar
+
     @GetMapping
     public CollectionModel<EstadoModel> listar() {
         List<Estado> todosEstados = estadoRepository.findAll();
@@ -39,7 +38,6 @@ public class EstadoController {
         return estadoModelAssembler.toCollectionModel(todosEstados);
     }
 
-    @CheckSecurity.Estado.PodeConsultar
     @GetMapping("/{estadoId}")
     public EstadoModel buscar(@PathVariable Long estadoId) {
         Estado estado = cadastroEstado.buscarOuFalhar(estadoId);
@@ -47,7 +45,6 @@ public class EstadoController {
         return estadoModelAssembler.toModel(estado);
     }
 
-    @CheckSecurity.Estado.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EstadoModel adicionar(@RequestBody @Valid EstadoInput estadoInput) {
@@ -58,7 +55,6 @@ public class EstadoController {
         return estadoModelAssembler.toModel(estado);
     }
 
-    @CheckSecurity.Estado.PodeEditar
     @PutMapping("/{estadoId}")
     public EstadoModel atualizar(@PathVariable Long estadoId,
                                  @RequestBody @Valid EstadoInput estadoInput) {
@@ -71,7 +67,6 @@ public class EstadoController {
         return estadoModelAssembler.toModel(estadoAtual);
     }
 
-    @CheckSecurity.Estado.PodeEditar
     @DeleteMapping("/{estadoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long estadoId) {

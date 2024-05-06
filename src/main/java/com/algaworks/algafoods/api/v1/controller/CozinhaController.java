@@ -4,7 +4,6 @@ import com.algaworks.algafoods.api.v1.assembler.CozinhaInputDisassembler;
 import com.algaworks.algafoods.api.v1.assembler.CozinhaModelAssembler;
 import com.algaworks.algafoods.api.v1.model.CozinhaModel;
 import com.algaworks.algafoods.api.v1.model.input.CozinhaInput;
-import com.algaworks.algafoods.core.security.CheckSecurity;
 import com.algaworks.algafoods.domain.model.Cozinha;
 import com.algaworks.algafoods.domain.repository.CozinhaRepository;
 import com.algaworks.algafoods.domain.service.CozinhaService;
@@ -38,7 +37,7 @@ public class CozinhaController {
     @Autowired
     private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
-    @CheckSecurity.Cozinhas.PodeConsultar
+
     @GetMapping
     public PagedModel<CozinhaModel> listar(Pageable pageable) {
         log.info("Consultando cozinhas...");
@@ -47,7 +46,7 @@ public class CozinhaController {
 
         return pagedResourcesAssembler.toModel(cozinhasPage, cozinhaModelAssembler);
     }
-    @CheckSecurity.Cozinhas.PodeConsultar
+
     @GetMapping("/{cozinhaId}")
     public CozinhaModel buscar(@PathVariable Long cozinhaId) {
         Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
@@ -55,7 +54,6 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinha);
     }
 
-    @CheckSecurity.Cozinhas.PodeEditar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
@@ -65,7 +63,6 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinha);
     }
 
-    @CheckSecurity.Cozinhas.PodeEditar
     @PutMapping("/{cozinhaId}")
     public CozinhaModel atualizar(@PathVariable Long cozinhaId,
                                   @RequestBody @Valid CozinhaInput cozinhaInput) {
@@ -76,7 +73,6 @@ public class CozinhaController {
         return cozinhaModelAssembler.toModel(cozinhaAtual);
     }
 
-    @CheckSecurity.Cozinhas.PodeEditar
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long cozinhaId) {
