@@ -28,7 +28,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioInputDisassembler disassembler;
 
-
     @GetMapping
     public CollectionModel<UsuarioModel> listar(){
         return assembler.toCollectionModel(repository.findAll());
@@ -38,8 +37,6 @@ public class UsuarioController {
         Usuario usuario = service.buscarOuFalhar(usuarioId);
         return assembler.toModel(usuario);
     }
-
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioModel adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput){
@@ -47,8 +44,6 @@ public class UsuarioController {
         usuario = service.salvar(usuario);
         return assembler.toModel(usuario);
     }
-
-
     @PutMapping("/{usuarioId}")
     public UsuarioModel atualizar(@PathVariable Long usuarioId,
                                   @RequestBody @Valid UsuarioInput usuarioInput) {
@@ -58,13 +53,9 @@ public class UsuarioController {
 
         return assembler.toModel(usuarioAtual);
     }
-
-
     @PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInput senha) {
         service.alterarSenha(usuarioId, senha.getSenhaAtual(), senha.getNovaSenha());
     }
-
-
 }
